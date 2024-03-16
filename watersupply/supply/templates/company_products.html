@@ -1,0 +1,71 @@
+<!-- company_products.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ company.name }} Products</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ company.name }} Products</h1>
+        <form method="post" action="{% url 'checkout' %}" onsubmit="return validateForm();">
+            {% csrf_token %} <!-- Include CSRF token here -->
+            <ul>
+                {% for product in products %}
+                <li>
+                    <input type="checkbox" name="product_ids" value="{{ product.bottleid }}"> 
+                    <strong>{{ product.brandname }}</strong> - Bottleid: {{ product.bottleid }} - Price: {{ product.price }}, Stock: {{ product.stock }}
+                    <input type="number" name="quantities" value="1" min="1"> Quantity
+                </li>
+                {% endfor %}
+            </ul>
+            <input type="submit" value="Checkout">
+        </form>
+    </div>
+
+    <script>
+        function validateForm() {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            var checked = false;
+            checkboxes.forEach(function(checkbox) {
+                if (checkbox.checked) {
+                    checked = true;
+                }
+            });
+            if (!checked) {
+                alert('No item selected. Please select at least one item.');
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+    </script>
+</body>
+</html>
